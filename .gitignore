@@ -9,4 +9,4 @@
 */test/
 */manifest.mf
 nlp-programming/
-*/.gitignore
+.gitignore
