@@ -1,8 +1,8 @@
 *~
-*/src/*/*~
-*/src/*/*.sh
-*/src/*/*.class
-*/src/*/*.jar
+src/*/*~
+src/*/*.sh
+src/*/*.class
+src/*/*.jar
 build/
 build.xml
 nbproject/
