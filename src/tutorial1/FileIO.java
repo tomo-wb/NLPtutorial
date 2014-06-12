@@ -1,3 +1,5 @@
+package tutorial1;
+
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -64,7 +66,7 @@ public class FileIO {
         return TextsArray;
     }
     
-    void ArrayListPrint(ArrayList<String> arrayList, String filename){
+    public void ArrayListPrint(ArrayList<String> arrayList, String filename){
         try{
             File file = new File(filename);
             FileWriter filewriter = new FileWriter(file);
@@ -89,7 +91,6 @@ public class FileIO {
             System.out.println(e);
         }
     }
-    
     
     private static void println(Object obj) { System.out.println(obj); }
 }

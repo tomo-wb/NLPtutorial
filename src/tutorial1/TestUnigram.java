@@ -1,3 +1,5 @@
+package tutorial1;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,12 +57,12 @@ public class TestUnigram {
         println("coverage = " + coverage);
     }
     
-    private static double log2(double p){
+    public static double log2(double p){
         double log2 = Math.log(p)/Math.log(2.0);
         return log2;
     }
     
-    private static HashMap<String, Double> Array2Hash(ArrayList<String> arrayList){
+    public static HashMap<String, Double> Array2Hash(ArrayList<String> arrayList){
         HashMap<String, Double> hashMap = new HashMap<>();
         for(int i = 0; i < arrayList.size(); i++){
             String[] wordProb = arrayList.get(i).split("\t");
