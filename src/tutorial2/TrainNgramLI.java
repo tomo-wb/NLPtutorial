@@ -1,6 +1,5 @@
 package tutorial2;
 
-
 import tutorial1.FileIO;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,12 +11,13 @@ import java.util.Set;
  *
  * @author TomoyaMizumoto
  */
-public class TrainBigramLI {
+public class TrainNgramLI {
     private static HashMap<String, Integer> counts = new HashMap<>();
     private static HashMap<String, Integer> contextCounts = new HashMap<>();
+    private static int n = 3;
     
     public static void main(String[] args){
-        //String fileName = "nlp-programming/test/02-train-input.txt";
+        //String fileName = "nlp-programming/test/01-train-input.txt";
         String fileName = "nlp-programming/data/wiki-en-train.word";
         String modelName = "train.model";
         FileIO FIO = new FileIO();
@@ -53,37 +53,54 @@ public class TrainBigramLI {
     
     private static void CountsWordFreq(ArrayList<String> TextsArray){
         for(int i = 0; i < TextsArray.size(); i++){
-            String[] words = TextsArray.get(i).split(" ");
-            ArrayList<String> list = new ArrayList<String> (Arrays.asList(words));
-            list.add(0, "<s>");
-            list.add("</s>");
+            ArrayList<String> list = PutBOSsymbol(TextsArray.get(i), n);
         
-            for(int j = 1; j < list.size(); j++){
-                String word = list.get(j);
-                String wordj_1 = list.get(j-1);
-                String bigram = wordj_1 + " " + word;
-                int c = 1;
-                if(counts.containsKey(bigram)){
-                    c = counts.get(bigram) + 1;
+            for(int j = n-1; j < list.size(); j++){
+                String[] ngram = new String[n];
+                int num = 0;
+                ngram[num] = list.get(j);
+                for(int k = 1; k < n; k++){
+                    ngram[num+1] = list.get(j-num-1) + " " + ngram[num];
+                    num++;
                 }
-                counts.put(bigram, c);
                 
-                c = 1;
-                if(contextCounts.containsKey(wordj_1)){
-                    c = contextCounts.get(wordj_1) + 1;
+                for(int k = 0; k < n; k++){
+                    int c = 1;
+                    if(counts.containsKey(ngram[k])){
+                        c = counts.get(ngram[k]) + 1;
+                    }
+                    counts.put(ngram[k], c);
+                    
+                    c = 1;
+                    String context = getContext(ngram[k]);
+                    if(contextCounts.containsKey(context)){
+                        c = contextCounts.get(context) + 1;
+                    }
+                    contextCounts.put(context, c);
                 }
-                contextCounts.put(wordj_1, c);
-                
-                c = 1;
-                if(counts.containsKey(word)){
-                    c = counts.get(word) + 1;
-                }
-                counts.put(word, c);
-                
-                c = contextCounts.get("") + 1;
-                contextCounts.put("", c);
             }  
         }
+    }
+    
+    public static String getContext(String text){
+        String context = "";
+        if(text.contains(" ")){
+            String[] words = text.split(" ");
+            ArrayList<String> list = new ArrayList<String> (Arrays.asList(words));
+            list.remove(list.size()-1);
+            context = ArrayToString(list);
+        }
+        return context;
+    }
+    
+    public static ArrayList<String> PutBOSsymbol(String text, int ngram){
+        String[] words = text.split(" ");
+        ArrayList<String> list = new ArrayList<String> (Arrays.asList(words));
+        for(int i = 0;i < ngram-1; i++){
+            list.add(0, "<s>");
+        }
+        list.add("</s>");
+        return list;
     }
     
     public static String ArrayToString(ArrayList<String> arrayString){

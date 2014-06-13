@@ -9,6 +9,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -85,6 +88,23 @@ public class FileIO {
             FileWriter filewriter = new FileWriter(file);
             for(int i = 0; i < texts.length; i++){
                 filewriter.write(texts[i]+"\n");
+            }
+            filewriter.close();
+        }catch(IOException e){
+            System.out.println(e);
+        }
+    }
+    
+    public void HashMapPrint(HashMap<String, Integer> hm, String filename){
+        try{
+            File file = new File(filename);
+            FileWriter filewriter = new FileWriter(file);
+            Set keySet = hm.keySet();
+            Iterator it = keySet.iterator();
+            while(it.hasNext()){
+                String key = it.next().toString();
+                String output = key + "\t" + hm.get(key);
+                filewriter.write(output+"\n");
             }
             filewriter.close();
         }catch(IOException e){
