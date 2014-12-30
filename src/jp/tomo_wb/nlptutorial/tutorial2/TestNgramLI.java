@@ -1,20 +1,19 @@
 
-package tutorial2;
+package jp.tomo_wb.nlptutorial.tutorial2;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import tutorial1.FileIO;
-import static tutorial1.TestUnigram.Array2Hash;
-import static tutorial1.TestUnigram.log2;
-import static tutorial2.TrainNgramLI.PutBOSsymbol;
+import jp.tomo_wb.nlptutorial.util.FileIO;
+import static jp.tomo_wb.nlptutorial.tutorial1.TestUnigram.Array2Hash;
+import static jp.tomo_wb.nlptutorial.tutorial1.TestUnigram.log2;
+import static jp.tomo_wb.nlptutorial.tutorial2.TrainNgramLI.PutBOSsymbol;
 
 /**
  *
  * @author TomoyaMizumoto
  */
 public class TestNgramLI {
-    private static int n = 3;
+    private static int n = 2;
     private static final double[] lambdas = new double[n];
     private static final double[] lambdaUNKs = new double[n];
     private static double W = 0.0;
@@ -28,16 +27,16 @@ public class TestNgramLI {
         FileIO FIO = new FileIO();
         
         for(int i = 0; i < n; i++){
-            lambdas[i] = 0.95;
+            lambdas[i] = 0.85;
             lambdaUNKs[i] = 1 - lambdas[i];
         }
         
         ArrayList<String> TextsArray = FIO.FileReader(fileName);
         ArrayList<String> ModelArray = FIO.FileReader(modelName);
         HashMap<String, Double> model = Array2Hash(ModelArray);
-        evalBigram(TextsArray, model);
+        evalNgram(TextsArray, model);
     }
-    private static void evalBigram(ArrayList<String> arrayList, HashMap<String, Double> model){
+    private static void evalNgram(ArrayList<String> arrayList, HashMap<String, Double> model){
         for(int i = 0; i < arrayList.size(); i++){
             ArrayList<String> list = PutBOSsymbol(arrayList.get(i), n);
             for(int j = n - 1 ; j < list.size(); j++){

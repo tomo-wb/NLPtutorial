@@ -1,15 +1,15 @@
 
-package tutorial2;
+package jp.tomo_wb.nlptutorial.tutorial2;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
-import tutorial1.FileIO;
-import static tutorial2.TrainNgramLI.ArrayToString;
-import static tutorial2.TrainNgramLI.PutBOSsymbol;
-import static tutorial2.TrainNgramLI.getContext;
+import jp.tomo_wb.nlptutorial.util.FileIO;
+import static jp.tomo_wb.nlptutorial.tutorial2.TrainNgramLI.ArrayToString;
+import static jp.tomo_wb.nlptutorial.tutorial2.TrainNgramLI.PutBOSsymbol;
+import static jp.tomo_wb.nlptutorial.tutorial2.TrainNgramLI.getContext;
 
 /**
  *
@@ -25,7 +25,7 @@ public class TrainNgramWB {
         //String fileName = "nlp-programming/data/wiki-en-train.word";
         String fileName = "nlp-programming/test/01-train-input.txt";
         String modelName = "train.model";
-        String typesName = "types.count";
+        String lambdaName = "lambda.model";
         FileIO FIO = new FileIO();
         ArrayList<String> TextsArray = FIO.FileReader(fileName);
         
@@ -33,7 +33,12 @@ public class TrainNgramWB {
         CountsWordFreq(TextsArray);
         ArrayList<String> arrayList = CalcProb();
         FIO.ArrayListPrint(arrayList, modelName);
-        FIO.HashMapPrint(typesCount, typesName);
+        
+        
+        //FIO.HashMapPrint(typesCount, typesName);
+        addStartSymbol();
+        HashMap<String, Double> ngramLambda = getLambda(counts, typesCount);
+        FIO.HashMapPrint(ngramLambda, lambdaName);
     }
     
     private static ArrayList<String> CalcProb(){
@@ -45,17 +50,22 @@ public class TrainNgramWB {
             String key = it.next().toString();
             double count = counts.get(key);
             String context = "";
+            int c = 1;
             if(key.contains(" ")){
                 String[] words = key.split(" ");
-                ArrayList<String> list = new ArrayList<String> (Arrays.asList(words));
+                ArrayList<String> list = new ArrayList<> (Arrays.asList(words));
                 list.remove(list.size()-1);
                 context = ArrayToString(list);
-                int c = 1;
                 if(typesCount.containsKey(context)){
                     c = typesCount.get(context) + 1;
                 }
-                typesCount.put(context, c);
             }
+            else{
+                if(typesCount.containsKey(context)){
+                    c = typesCount.get(context) + 1;
+                }
+            }
+            typesCount.put(context, c);
             double prob = count / contextCounts.get(context);
             String output = key+"\t"+prob;
             arrayList.add(output);
@@ -63,6 +73,7 @@ public class TrainNgramWB {
         
         return arrayList;  
     }
+    
     private static void CountsWordFreq(ArrayList<String> TextsArray){
         for(int i = 0; i < TextsArray.size(); i++){
             ArrayList<String> list = PutBOSsymbol(TextsArray.get(i), n);
@@ -93,6 +104,39 @@ public class TrainNgramWB {
         }
     }
     
+    private static void addStartSymbol(){
+        counts.put("", contextCounts.get(""));
+        if(n > 1){
+            ArrayList<String> list = new ArrayList<>();
+            for(int i = 0; i < n - 1; i++){
+                list.add(0, "<s>");
+            }
+            String context = ArrayToString(list);
+            counts.put(context, counts.get("</s>"));
+        }   
+    }
+    
+    private static HashMap<String, Double> getLambda(HashMap<String, Integer> token, HashMap<String, Integer> types){
+        Set keySet = types.keySet();
+        Iterator it = keySet.iterator();
+        
+        HashMap<String, Double> ngramLambda = new HashMap<>();
+        
+        while(it.hasNext()){
+            String key = it.next().toString();
+            double u = types.get(key);  // types number of wi-1
+            double c = token.get(key);  // token number of wi-1
+            double lambda = 1 - (u / (u + c));
+            ngramLambda.put(key,lambda);
+        }
+        //list.remove(list.size()-1);
+        //String context = ArrayToString(list);
+        //double u = types.get(context);  // types number of wi-1 
+        //double c = token.get(context);  // token number of wi-1
+        //double lambda = 1 - (u / (u + c));
+        double lambda = 0.0; 
+        return ngramLambda;
+    }
     
     private static void println(Object obj) { System.out.println(obj); }
 }

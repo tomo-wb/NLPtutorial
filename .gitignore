@@ -11,3 +11,4 @@ manifest.mf
 nlp-programming/
 .gitignore
 train.model
+dist/

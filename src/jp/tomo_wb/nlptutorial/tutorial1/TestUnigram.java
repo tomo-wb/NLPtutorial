@@ -1,6 +1,7 @@
-package tutorial1;
+package jp.tomo_wb.nlptutorial.tutorial1;
 
 
+import jp.tomo_wb.nlptutorial.util.FileIO;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;

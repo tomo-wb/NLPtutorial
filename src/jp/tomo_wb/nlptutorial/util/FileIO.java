@@ -1,4 +1,4 @@
-package tutorial1;
+package jp.tomo_wb.nlptutorial.util;
 
 
 import java.io.BufferedReader;
@@ -95,7 +95,7 @@ public class FileIO {
         }
     }
     
-    public void HashMapPrint(HashMap<String, Integer> hm, String filename){
+    public void HashMapPrint(HashMap hm, String filename){
         try{
             File file = new File(filename);
             FileWriter filewriter = new FileWriter(file);

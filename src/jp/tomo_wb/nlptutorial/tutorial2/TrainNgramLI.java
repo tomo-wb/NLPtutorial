@@ -1,6 +1,6 @@
-package tutorial2;
+package jp.tomo_wb.nlptutorial.tutorial2;
 
-import tutorial1.FileIO;
+import jp.tomo_wb.nlptutorial.util.FileIO;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,9 +12,9 @@ import java.util.Set;
  * @author TomoyaMizumoto
  */
 public class TrainNgramLI {
-    private static HashMap<String, Integer> counts = new HashMap<>();
-    private static HashMap<String, Integer> contextCounts = new HashMap<>();
-    private static int n = 3;
+    private static final HashMap<String, Integer> counts = new HashMap<>();
+    private static final HashMap<String, Integer> contextCounts = new HashMap<>();
+    private static final int n = 2;
     
     public static void main(String[] args){
         //String fileName = "nlp-programming/test/01-train-input.txt";
@@ -39,7 +39,7 @@ public class TrainNgramLI {
             String context = "";
             if(key.contains(" ")){
                 String[] words = key.split(" ");
-                ArrayList<String> list = new ArrayList<String> (Arrays.asList(words));
+                ArrayList<String> list = new ArrayList<> (Arrays.asList(words));
                 list.remove(list.size()-1);
                 context = ArrayToString(list);
             }
@@ -86,7 +86,7 @@ public class TrainNgramLI {
         String context = "";
         if(text.contains(" ")){
             String[] words = text.split(" ");
-            ArrayList<String> list = new ArrayList<String> (Arrays.asList(words));
+            ArrayList<String> list = new ArrayList<> (Arrays.asList(words));
             list.remove(list.size()-1);
             context = ArrayToString(list);
         }
@@ -95,8 +95,8 @@ public class TrainNgramLI {
     
     public static ArrayList<String> PutBOSsymbol(String text, int ngram){
         String[] words = text.split(" ");
-        ArrayList<String> list = new ArrayList<String> (Arrays.asList(words));
-        for(int i = 0;i < ngram-1; i++){
+        ArrayList<String> list = new ArrayList<> (Arrays.asList(words));
+        for(int i = 0; i < ngram - 1; i++){
             list.add(0, "<s>");
         }
         list.add("</s>");
@@ -104,9 +104,12 @@ public class TrainNgramLI {
     }
     
     public static String ArrayToString(ArrayList<String> arrayString){
-        String stringLine = arrayString.get(0);
-        for(int i = 1; i < arrayString.size(); i++){
-            stringLine = stringLine + " " + arrayString.get(i);
+        String stringLine = "";
+        if(arrayString.size() > 0){
+            stringLine = arrayString.get(0);
+            for(int i = 1; i < arrayString.size(); i++){
+                stringLine = stringLine + " " + arrayString.get(i);
+            }
         }
         return stringLine;
     }
